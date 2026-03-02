@@ -11,7 +11,7 @@ The **Language module** provides a simple and extensible system for multi-langua
 
 ## Folder Structure
 
-Here's a recommended folder layout for the Language module within your Trongate app:
+Here's the folder layout for the Language module within your Trongate app:
 
 ```
 app/
@@ -21,21 +21,29 @@ app/
   languages/
     en.php
     fr.php
+    vn.php
   modules/
     language/
       Language.php
       language_helper.php
   modules/
-    projects/
-      Projects.php
+    welcome/
+      Welcome.php
+      css/
+        custom.css
+      js/
+        custom.js
       views/
-        edit.php
+        default_homepage.php
+        demo_homepage.php
+  .gitignore
+  README.md
 ```
 
 - app/config/: Configuration files for languages and routing.
 - app/languages/: Translation files for each supported language.
 - app/modules/language/: Contains the Language module and helper.
-- app/modules/projects/: Inspired example module by [PartialShawn](https://github.com/PartialShawn/projects-manager-trongate) using the language system.
+- app/modules/welcome/: Default welcome module with a demo view.
 
 ---
 
@@ -46,7 +54,7 @@ app/
 Define the available languages and default language:
 
 ```php
-define('AVAILABLE_LANGUAGES', ['en', 'fr']);
+define('AVAILABLE_LANGUAGES', ['en', 'fr', 'vn']);
 define('DEFAULT_LANGUAGE', 'en');
 
 // Interceptors (run before routing)
@@ -57,6 +65,9 @@ define('INTERCEPTORS', $interceptors);
 ```
 
 - **AVAILABLE_LANGUAGES**: Array of language codes that your site supports.
+  - en = English
+  - fr = French
+  - vn = Vietnamese
 - **DEFAULT_LANGUAGE**: Fallback language if none is detected.
 - **INTERCEPTORS**: Runs the `before()` method of the `Language` module early in the request lifecycle to detect/ set the language.
 
@@ -76,8 +87,8 @@ $routes = [
 define('CUSTOM_ROUTES', $routes);
 ```
 
-- This allows URLs like `http://localhost/{app_name}/fr/projects/edit` to route to `projects/edit`.
-- The interceptor will detect `fr` as the current language.
+- This allows URLs like `http://localhost/{app_name}/fr/welcome/index` - route to French welcome index page.
+- The interceptor will detect `fr` as the current language and set the cookie for 30 days.
 
 ---
 
@@ -89,6 +100,7 @@ Store language files in `languages/` within your **app folder**:
 languages/
   en.php
   fr.php
+  vn.php
 ```
 
 Each file should return an associative array of translation keys:
@@ -104,20 +116,8 @@ return [
 ];
 ```
 
-`fr.php`
-
-```php
-<?php
-return [
-  'create_project' => 'Créer un projet',
-  'update_project' => 'Mettre à jour le projet',
-  'delete_project' => 'Supprimer le projet',
-  'submit' => 'Envoyer'
-];
-```
-
 - The keys are used in controllers/views.
-- Add new languages by creating additional files (e.g., `es.php` for Spanish) and adding the code to `AVAILABLE_LANGUAGES` or letting it be auto-detected if you implement dynamic loading.
+- Add new languages by creating additional files (e.g., `es.php` for Spanish).
 
 ---
 
