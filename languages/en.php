@@ -4,6 +4,9 @@ return [
   'update_project' => 'Update Project',
   'delete_project' => 'Delete Project',
   'submit' => 'Submit',
-  'tgv2_tutorials' => 'Trongate v2 Tutorials',
-  'welcome_dashboard' => 'Welcome to the Dashboard'
+  'welcome_h1' => 'Enjoy Trongate!',
+  'welcome_h2' => 'The Native PHP Framework',
+  'welcome_p' => "You have successfully installed Trongate. You're now ready to start building fast, efficient web applications.",
+  'welcome_visit_trongate' => 'Visit Trongate.io',
+  'welcome_view_docs' => 'View Documentation'
 ];

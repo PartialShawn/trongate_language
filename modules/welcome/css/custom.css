@@ -1,0 +1,120 @@
+/* Base variables for light theme */
+:root {
+  --bg-color: #fff;
+  --text-color: #333;
+  --border-color: #ccc;
+  --card-bg: #fff;
+  --card-header-bg: var(--primary);
+  --card-header-color: var(--primary-color);
+  --button-bg: var(--primary);
+  --button-color: var(--primary-color);
+  --button-hover-bg: var(--primary-dark);
+  --icon-hover-bg: rgba(0, 0, 0, 0.1);
+}
+
+/* Dark theme overrides */
+[data-theme="dark"] {
+  --bg-color: #222;
+  --text-color: #eee;
+  --border-color: #555;
+  --card-bg: #333;
+  --card-header-bg: var(--primary-dark);
+  --card-header-color: #eee;
+  --button-bg: var(--primary);
+  --button-color: var(--primary-color);
+  --button-hover-bg: var(--primary-darker);
+  --icon-hover-bg: rgba(255, 255, 255, 0.1);
+}
+
+/* Apply variables */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+/* Toggle Positioning */
+#theme-toggle-container {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Language Switcher */
+#lang-switcher-form {
+  margin: 0;
+}
+
+#lang-switcher {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  color: var(--text-color);
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  transition:
+    background 0.3s,
+    border-color 0.3s;
+}
+
+#lang-switcher:hover {
+  background-color: var(--icon-hover-bg);
+}
+
+#lang-switcher:focus {
+  outline: none;
+  border-color: var(--button-bg);
+}
+
+/* Drop-down list colours (can't fully theme these but this helps) */
+#lang-switcher option {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+}
+
+.button-icon {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color);
+}
+
+.button-icon:hover {
+  background-color: var(--icon-hover-bg);
+}
+
+/* Button Overrides */
+.button {
+  background-color: var(--button-bg);
+  color: var(--button-color) !important;
+  /* Override link color */
+  border: 1px solid var(--button-hover-bg);
+}
+
+.button:hover {
+  background-color: var(--button-hover-bg);
+}
+
+/* Toggle Button SVG Styling */
+.icon {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  fill: currentColor;
+}
