@@ -1,0 +1,26 @@
+# Ignore everything
+*
+
+# Allow config directory with specific files
+!config/
+config/*
+!config/config.php
+!config/custom_routing.php
+
+# Allow root languages folder and all contents
+!languages/
+!languages/**
+
+# Allow modules directory
+!modules/
+modules/*
+!modules/language/
+!modules/language/**
+!modules/welcome/
+!modules/welcome/**
+
+# Allow gitignore itself
+!.gitignore
+
+# Allow README.md
+!README.md
