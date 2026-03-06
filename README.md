@@ -56,6 +56,7 @@ Define the available languages and default language:
 ```php
 define('AVAILABLE_LANGUAGES', ['en', 'fr', 'vn']);
 define('DEFAULT_LANGUAGE', 'en');
+define('SHOW_MISSING_LANGUAGE_MESSAGE', true);
 
 // Interceptors (run before routing)
 $interceptors = [
@@ -69,6 +70,7 @@ define('INTERCEPTORS', $interceptors);
   - fr = French
   - vn = Vietnamese
 - **DEFAULT_LANGUAGE**: Fallback language if none is detected.
+- **SHOW_MISSING_LANGUAGE_MESSAGE**: If the string key is not defined this changes how a failure manifests. When false, it shows only the key. When true, it shows the key along with a message in square brackets. The message can be customized for each language using `missing_string_key` key in the language file.
 - **INTERCEPTORS**: Runs the `before()` method of the `Language` module early in the request lifecycle to detect/ set the language.
 
 ---
@@ -112,12 +114,14 @@ Each file should return an associative array of translation keys:
 return [
     'create_project' => 'Create Project',
     'edit_project' => 'Edit Project',
-    'delete_project' => 'Delete Project'
+    'delete_project' => 'Delete Project',
+    'missing_string_key' => 'Missing translation'
 ];
 ```
 
 - The keys are used in controllers/views.
 - Add new languages by creating additional files (e.g., `es.php` for Spanish).
+- Using `missing_string_key` allows for a customizable translation not found error for each language if `SHOW_MISSING_LANGUAGE_MESSAGE` is true.
 
 ---
 
@@ -158,7 +162,7 @@ class Projects extends Trongate {
 ```
 
 - All view files can use `_l()` without instantiating the module.
-- Strings fallback to the key if no translation is found.
+- Strings fallback to the key if no translation is found. If `SHOW_MISSING_LANGUAGE_MESSAGE` is set to true, a failure message is included with the key.
 
 ---
 
