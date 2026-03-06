@@ -64,12 +64,14 @@ $interceptors = [
 define('INTERCEPTORS', $interceptors);
 ```
 
-- **AVAILABLE_LANGUAGES**: Array of language codes that your site supports.
+- **AVAILABLE_LANGUAGES**: Array of language codes that your site supports. Eg.:
   - en = English
   - fr = French
   - vn = Vietnamese
 - **DEFAULT_LANGUAGE**: Fallback language if none is detected.
 - **INTERCEPTORS**: Runs the `before()` method of the `Language` module early in the request lifecycle to detect/ set the language.
+
+Note: any string is acceptable as a language code in the array and as URLs if you choose to use language-based URLs. This allows you to use ISO 639 2-letter or 3-letter codes or any custom lang or locale.
 
 ---
 
@@ -82,13 +84,31 @@ $routes = [
     'tg-admin' => 'trongate_administrators/login',
     'tg-admin/submit_login' => 'trongate_administrators/submit_login',
     'fr/(:any)/(:any)' => '$1/$2',
-    'en/(:any)/(:any)' => '$1/$2'
+    'en/(:any)/(:any)' => '$1/$2',
+    'en/(:any)' => '$1'
 ];
 define('CUSTOM_ROUTES', $routes);
 ```
 
 - This allows URLs like `http://localhost/{app_name}/fr/welcome/index` - route to French welcome index page.
 - The interceptor will detect `fr` as the current language and set the cookie for 30 days.
+- This will override the language set via cookie
+
+Alternatively, you can use `(:any) for the language code and simply ignore `$1`.  Eg.:
+
+```php
+$routes = [
+    'tg-admin' => 'trongate_administrators/login',
+    'tg-admin/submit_login' => 'trongate_administrators/submit_login',
+    '(:any)/projects/(:any)' => 'projects/$2',
+    '(:any)/projects/(:any)/(:any)' => 'projects/$2/$3',
+];
+define('CUSTOM_ROUTES', $routes);
+```
+
+Finally, you can combine these and have a URL such as `en/projects/1` be captured by `'(:any)/(:any)/(:any)' => '$2/$3'`. However, this can be captured by the module asset trigger. For example, requests to `welcome_assets/css/custom.css` will be redirected to a 404. Use with caution.
+
+Warning: this may conflict with the module assets trigger. 
 
 ---
 
@@ -117,7 +137,7 @@ return [
 ```
 
 - The keys are used in controllers/views.
-- Add new languages by creating additional files (e.g., `es.php` for Spanish).
+- Add new languages by creating additional files (e.g., `es.php` for Spanish). Any filename can be valid, so long as it matches `AVAILABLE_LANGUAGES`.
 
 ---
 
