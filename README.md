@@ -59,7 +59,7 @@ define('DEFAULT_LANGUAGE', 'en');
 
 // Interceptors (run before routing)
 $interceptors = [
-    'language' => 'before'
+    'language' => 'init'
 ];
 define('INTERCEPTORS', $interceptors);
 ```
@@ -69,7 +69,7 @@ define('INTERCEPTORS', $interceptors);
   - fr = French
   - vn = Vietnamese
 - **DEFAULT_LANGUAGE**: Fallback language if none is detected.
-- **INTERCEPTORS**: Runs the `before()` method of the `Language` module early in the request lifecycle to detect/ set the language.
+- **INTERCEPTORS**: Runs the `init()` method of the `Language` module early in the request lifecycle to detect/ set the language.
 
 ---
 
@@ -167,7 +167,7 @@ class Projects extends Trongate {
 
 ## 5. Interceptor Behavior
 
-The `before()` method of the Language module:
+The `init()` method of the Language module:
 
 1. Reads the first URL segment (e.g., `fr` or `en`).
 2. Sets `$_GET['lang']` for use throughout the request.
