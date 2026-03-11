@@ -15,29 +15,29 @@ Here's the folder layout for the Language module within your Trongate app:
 
 ```
 app/
-  config/
-    config.php
-    custom_routing.php
-  languages/
-    en.php
-    fr.php
-    vn.php
-  modules/
-    language/
-      Language.php
-      language_helper.php
-  modules/
-    welcome/
-      Welcome.php
-      css/
-        custom.css
-      js/
-        custom.js
-      views/
-        default_homepage.php
-        demo_homepage.php
-  .gitignore
-  README.md
+│
+├── config/
+│   ├── config.php
+│   └── custom_routing.php
+├── languages/
+│   ├── en.php
+│   ├── fr.php
+│   └── vn.php
+├── modules/
+│   ├── language/
+│   │   ├── Language.php
+│   │   └── language_helper.php
+│   └── welcome/
+│       ├── Welcome.php
+│       ├── css/
+│       │   └── custom.css
+│       ├── js/
+│       │   └── custom.js
+│       └── views/
+│           ├── default_homepage.php
+│           └── demo_homepage.php
+├── .gitignore
+└── README.md
 ```
 
 - app/config/: Configuration files for languages and routing.
