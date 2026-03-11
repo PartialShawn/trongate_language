@@ -75,20 +75,23 @@ define('INTERCEPTORS', $interceptors);
 
 ### **custom_routing.php**
 
-For language-based URLs, add routes to strip the language segment for routing:
+For language-based URLs, two consolidated routes strip the language prefix for any supported language:
 
 ```php
 $routes = [
     'tg-admin' => 'trongate_administrators/login',
     'tg-admin/submit_login' => 'trongate_administrators/submit_login',
-    'fr/(:any)/(:any)' => '$1/$2',
-    'en/(:any)/(:any)' => '$1/$2'
+    '([a-z]{2})/(:any)/(:any)' => '$2/$3',
+    '([a-z]{2})/(:any)' => '$2'
 ];
 define('CUSTOM_ROUTES', $routes);
 ```
 
-- This allows URLs like `http://localhost/{app_name}/fr/welcome/index` - route to French welcome index page.
-- The interceptor will detect `fr` as the current language and set the cookie for 30 days.
+- A single regex pattern `([a-z]{2})` matches any two-letter language code (e.g. `en`, `fr`, `vn`) instead of repeating a route per language.
+- Because `([a-z]{2})` is an explicit capture group, it occupies `$1`, so the subsequent `(:any)` captures shift to `$2` and `$3`.
+- This allows URLs like `http://localhost/{app_name}/fr/welcome/index` to route to the French welcome index page.
+- The interceptor detects the language prefix and sets the `site_lang` cookie for 30 days.
+- To add a new language, no route changes are needed — just create the language file and add the code to `AVAILABLE_LANGUAGES`.
 
 ---
 
@@ -187,12 +190,13 @@ $this->language->set('fr'); // Force French
 
 ## 7. Notes
 
-- No changes are needed in `engine/ignition.php/get_segments()` or other core files.
+- No changes are needed in `engine/ignition.php` or other core files.
 - The module works fully via the interceptor and the helper.
+- The `([a-z]{2})` regex in routing and `in_array()` in the interceptor both validate the language code — malformed codes are silently ignored.
 - Adding a new language requires:
   1. Creating a `languages/xx.php` file.
-  2. Adding the language code to `AVAILABLE_LANGUAGES` (or using dynamic detection).
-  3. Adding a new custom route if you are using a URL
+  2. Adding the language code to `AVAILABLE_LANGUAGES` in `config.php`.
+  3. No route changes needed — the `([a-z]{2})` pattern handles all two-letter codes automatically.
 
 ---
 
