@@ -64,12 +64,14 @@ $interceptors = [
 define('INTERCEPTORS', $interceptors);
 ```
 
-- **AVAILABLE_LANGUAGES**: Array of language codes that your site supports.
+- **AVAILABLE_LANGUAGES**: Array of language codes that your site supports. Eg.:
   - en = English
   - fr = French
   - vn = Vietnamese
 - **DEFAULT_LANGUAGE**: Fallback language if none is detected.
 - **INTERCEPTORS**: Runs the `init()` method of the `Language` module early in the request lifecycle to detect/ set the language.
+
+Note: any string is acceptable as a language code in the array and as URLs if you choose to use language-based URLs. This allows you to use ISO 639 2-letter or 3-letter codes or any custom lang or locale.
 
 ---
 
@@ -92,7 +94,7 @@ define('CUSTOM_ROUTES', $routes);
 - This allows URLs like `http://localhost/{app_name}/fr/welcome/index` to route to the French welcome index page.
 - The interceptor detects the language prefix and sets the `site_lang` cookie for 30 days.
 - To add a new language, no route changes are needed — just create the language file and add the code to `AVAILABLE_LANGUAGES`.
-
+- Pro-tip: to use three-letter language codes (e.g. `eng`), use `([a-z]{3})` and name the language files accordingly. Long codes can be used (eg. `art-x-telerin`), but accepting all lengths conflict with module asset URLs, which would have to be explicitly defined.
 ---
 
 ## 2. Language Files
@@ -120,7 +122,7 @@ return [
 ```
 
 - The keys are used in controllers/views.
-- Add new languages by creating additional files (e.g., `es.php` for Spanish).
+- Add new languages by creating additional files (e.g., `es.php` for Spanish). Any filename can be valid, so long as it matches `AVAILABLE_LANGUAGES`.
 
 ---
 
