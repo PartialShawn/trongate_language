@@ -9,6 +9,7 @@ define('ERROR_404', 'templates/error_404');
 
 define('AVAILABLE_LANGUAGES', ['en', 'fr', 'vn']);
 define('DEFAULT_LANGUAGE', 'en');
+define('SHOW_MISSING_LANGUAGE_MESSAGE', true);
 
 $interceptors = [
     'language' => 'init'

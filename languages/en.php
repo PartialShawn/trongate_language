@@ -8,5 +8,6 @@ return [
   'welcome_h2' => 'The Native PHP Framework',
   'welcome_p' => "You have successfully installed Trongate. You're now ready to start building fast, efficient web applications.",
   'welcome_visit_trongate' => 'Visit Trongate.io',
-  'welcome_view_docs' => 'View Documentation'
+  'welcome_view_docs' => 'View Documentation',
+  'missing_string_key' => 'Missing translation',
 ];

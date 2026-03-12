@@ -85,7 +85,18 @@ class Language extends Trongate {
    */
   public function get(string $key): string {
     $this->load();
-    return self::$loaded_languages[self::$current_language][$key] ?? $key;
+
+    if (SHOW_MISSING_LANGUAGE_MESSAGE) {
+      if (!empty(self::$loaded_languages[self::$current_language][$key])) {
+        return self::$loaded_languages[self::$current_language][$key];
+      } elseif (!empty(self::$loaded_languages[self::$current_language]['missing_string_key'])) {
+        return '['.self::$loaded_languages[self::$current_language]['missing_string_key'].": {$key}]";
+      } else {
+        return "[LangError:{$key}]";
+      }
+    } else {
+      return self::$loaded_languages[self::$current_language][$key] ?? $key;
+    }
   }
 
   /**
