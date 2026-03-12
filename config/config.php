@@ -12,6 +12,6 @@ define('DEFAULT_LANGUAGE', 'en');
 define('SHOW_MISSING_LANGUAGE_MESSAGE', true);
 
 $interceptors = [
-    'language' => 'before'
+    'language' => 'init'
 ];
 define('INTERCEPTORS', $interceptors);

@@ -15,29 +15,29 @@ Here's the folder layout for the Language module within your Trongate app:
 
 ```
 app/
-  config/
-    config.php
-    custom_routing.php
-  languages/
-    en.php
-    fr.php
-    vn.php
-  modules/
-    language/
-      Language.php
-      language_helper.php
-  modules/
-    welcome/
-      Welcome.php
-      css/
-        custom.css
-      js/
-        custom.js
-      views/
-        default_homepage.php
-        demo_homepage.php
-  .gitignore
-  README.md
+│
+├── config/
+│   ├── config.php
+│   └── custom_routing.php
+├── languages/
+│   ├── en.php
+│   ├── fr.php
+│   └── vn.php
+├── modules/
+│   ├── language/
+│   │   ├── Language.php
+│   │   └── language_helper.php
+│   └── welcome/
+│       ├── Welcome.php
+│       ├── css/
+│       │   └── custom.css
+│       ├── js/
+│       │   └── custom.js
+│       └── views/
+│           ├── default_homepage.php
+│           └── demo_homepage.php
+├── .gitignore
+└── README.md
 ```
 
 - app/config/: Configuration files for languages and routing.
@@ -60,7 +60,7 @@ define('SHOW_MISSING_LANGUAGE_MESSAGE', true);
 
 // Interceptors (run before routing)
 $interceptors = [
-    'language' => 'before'
+    'language' => 'init'
 ];
 define('INTERCEPTORS', $interceptors);
 ```
@@ -71,26 +71,29 @@ define('INTERCEPTORS', $interceptors);
   - vn = Vietnamese
 - **DEFAULT_LANGUAGE**: Fallback language if none is detected.
 - **SHOW_MISSING_LANGUAGE_MESSAGE**: If the string key is not defined this changes how a failure manifests. When false, it shows only the key. When true, it shows the key along with a message in square brackets. The message can be customized for each language using `missing_string_key` key in the language file.
-- **INTERCEPTORS**: Runs the `before()` method of the `Language` module early in the request lifecycle to detect/ set the language.
+- **INTERCEPTORS**: Runs the `init()` method of the `Language` module early in the request lifecycle to detect/ set the language.
 
 ---
 
 ### **custom_routing.php**
 
-For language-based URLs, add routes to strip the language segment for routing:
+For language-based URLs, two consolidated routes strip the language prefix for any supported language:
 
 ```php
 $routes = [
     'tg-admin' => 'trongate_administrators/login',
     'tg-admin/submit_login' => 'trongate_administrators/submit_login',
-    'fr/(:any)/(:any)' => '$1/$2',
-    'en/(:any)/(:any)' => '$1/$2'
+    '([a-z]{2})/(:any)/(:any)' => '$2/$3',
+    '([a-z]{2})/(:any)' => '$2'
 ];
 define('CUSTOM_ROUTES', $routes);
 ```
 
-- This allows URLs like `http://localhost/{app_name}/fr/welcome/index` - route to French welcome index page.
-- The interceptor will detect `fr` as the current language and set the cookie for 30 days.
+- A single regex pattern `([a-z]{2})` matches any two-letter language code (e.g. `en`, `fr`, `vn`) instead of repeating a route per language.
+- Because `([a-z]{2})` is an explicit capture group, it occupies `$1`, so the subsequent `(:any)` captures shift to `$2` and `$3`.
+- This allows URLs like `http://localhost/{app_name}/fr/welcome/index` to route to the French welcome index page.
+- The interceptor detects the language prefix and sets the `site_lang` cookie for 30 days.
+- To add a new language, no route changes are needed — just create the language file and add the code to `AVAILABLE_LANGUAGES`.
 
 ---
 
@@ -168,7 +171,7 @@ class Projects extends Trongate {
 
 ## 5. Interceptor Behavior
 
-The `before()` method of the Language module:
+The `init()` method of the Language module:
 
 1. Reads the first URL segment (e.g., `fr` or `en`).
 2. Sets `$_GET['lang']` for use throughout the request.
@@ -191,12 +194,13 @@ $this->language->set('fr'); // Force French
 
 ## 7. Notes
 
-- No changes are needed in `engine/ignition.php/get_segments()` or other core files.
+- No changes are needed in `engine/ignition.php` or other core files.
 - The module works fully via the interceptor and the helper.
+- The `([a-z]{2})` regex in routing and `in_array()` in the interceptor both validate the language code — malformed codes are silently ignored.
 - Adding a new language requires:
   1. Creating a `languages/xx.php` file.
-  2. Adding the language code to `AVAILABLE_LANGUAGES` (or using dynamic detection).
-  3. Adding a new custom route if you are using a URL
+  2. Adding the language code to `AVAILABLE_LANGUAGES` in `config.php`.
+  3. No route changes needed — the `([a-z]{2})` pattern handles all two-letter codes automatically.
 
 ---
 
