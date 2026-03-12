@@ -172,7 +172,7 @@ class Language extends Trongate {
    *
    * @return void
    */
-  public function before(): void {
+  public function init(): void {
     // Get the original URL path (without domain)
     $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     $path = trim($path, '/'); // e.g., "fr/projects/edit"

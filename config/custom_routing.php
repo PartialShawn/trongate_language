@@ -2,8 +2,7 @@
 $routes = [
     'tg-admin' => 'trongate_administrators/login',
     'tg-admin/submit_login' => 'trongate_administrators/submit_login',
-    'en/(:any)/(:any)' => '$1/$2',
-    'fr/(:any)/(:any)' => '$1/$2',
-    'vn/(:any)/(:any)' => '$1/$2'
+    '([a-z]{2})/(:any)/(:any)' => '$2/$3',
+    '([a-z]{2})/(:any)' => '$2'
 ];
 define('CUSTOM_ROUTES', $routes);

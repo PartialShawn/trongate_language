@@ -15,29 +15,29 @@ Here's the folder layout for the Language module within your Trongate app:
 
 ```
 app/
-  config/
-    config.php
-    custom_routing.php
-  languages/
-    en.php
-    fr.php
-    vn.php
-  modules/
-    language/
-      Language.php
-      language_helper.php
-  modules/
-    welcome/
-      Welcome.php
-      css/
-        custom.css
-      js/
-        custom.js
-      views/
-        default_homepage.php
-        demo_homepage.php
-  .gitignore
-  README.md
+│
+├── config/
+│   ├── config.php
+│   └── custom_routing.php
+├── languages/
+│   ├── en.php
+│   ├── fr.php
+│   └── vn.php
+├── modules/
+│   ├── language/
+│   │   ├── Language.php
+│   │   └── language_helper.php
+│   └── welcome/
+│       ├── Welcome.php
+│       ├── css/
+│       │   └── custom.css
+│       ├── js/
+│       │   └── custom.js
+│       └── views/
+│           ├── default_homepage.php
+│           └── demo_homepage.php
+├── .gitignore
+└── README.md
 ```
 
 - app/config/: Configuration files for languages and routing.
@@ -59,7 +59,7 @@ define('DEFAULT_LANGUAGE', 'en');
 
 // Interceptors (run before routing)
 $interceptors = [
-    'language' => 'before'
+    'language' => 'init'
 ];
 define('INTERCEPTORS', $interceptors);
 ```
@@ -69,7 +69,7 @@ define('INTERCEPTORS', $interceptors);
   - fr = French
   - vn = Vietnamese
 - **DEFAULT_LANGUAGE**: Fallback language if none is detected.
-- **INTERCEPTORS**: Runs the `before()` method of the `Language` module early in the request lifecycle to detect/ set the language.
+- **INTERCEPTORS**: Runs the `init()` method of the `Language` module early in the request lifecycle to detect/ set the language.
 
 Note: any string is acceptable as a language code in the array and as URLs if you choose to use language-based URLs. This allows you to use ISO 639 2-letter or 3-letter codes or any custom lang or locale.
 
@@ -77,39 +77,24 @@ Note: any string is acceptable as a language code in the array and as URLs if yo
 
 ### **custom_routing.php**
 
-For language-based URLs, add routes to strip the language segment for routing:
+For language-based URLs, two consolidated routes strip the language prefix for any supported language:
 
 ```php
 $routes = [
     'tg-admin' => 'trongate_administrators/login',
     'tg-admin/submit_login' => 'trongate_administrators/submit_login',
-    'fr/(:any)/(:any)' => '$1/$2',
-    'en/(:any)/(:any)' => '$1/$2',
-    'en/(:any)' => '$1'
+    '([a-z]{2})/(:any)/(:any)' => '$2/$3',
+    '([a-z]{2})/(:any)' => '$2'
 ];
 define('CUSTOM_ROUTES', $routes);
 ```
 
-- This allows URLs like `http://localhost/{app_name}/fr/welcome/index` - route to French welcome index page.
-- The interceptor will detect `fr` as the current language and set the cookie for 30 days.
-- This will override the language set via cookie
-
-Alternatively, you can use `(:any) for the language code and simply ignore `$1`.  Eg.:
-
-```php
-$routes = [
-    'tg-admin' => 'trongate_administrators/login',
-    'tg-admin/submit_login' => 'trongate_administrators/submit_login',
-    '(:any)/projects/(:any)' => 'projects/$2',
-    '(:any)/projects/(:any)/(:any)' => 'projects/$2/$3',
-];
-define('CUSTOM_ROUTES', $routes);
-```
-
-Finally, you can combine these and have a URL such as `en/projects/1` be captured by `'(:any)/(:any)/(:any)' => '$2/$3'`. However, this can be captured by the module asset trigger. For example, requests to `welcome_assets/css/custom.css` will be redirected to a 404. Use with caution.
-
-Warning: this may conflict with the module assets trigger. 
-
+- A single regex pattern `([a-z]{2})` matches any two-letter language code (e.g. `en`, `fr`, `vn`) instead of repeating a route per language.
+- Because `([a-z]{2})` is an explicit capture group, it occupies `$1`, so the subsequent `(:any)` captures shift to `$2` and `$3`.
+- This allows URLs like `http://localhost/{app_name}/fr/welcome/index` to route to the French welcome index page.
+- The interceptor detects the language prefix and sets the `site_lang` cookie for 30 days.
+- To add a new language, no route changes are needed — just create the language file and add the code to `AVAILABLE_LANGUAGES`.
+- Pro-tip: to use three-letter language codes (e.g. `eng`), use `([a-z]{3})` and name the language files accordingly. Long codes can be used (eg. `art-x-telerin`), but accepting all lengths conflict with module asset URLs, which would have to be explicitly defined.
 ---
 
 ## 2. Language Files
@@ -184,7 +169,7 @@ class Projects extends Trongate {
 
 ## 5. Interceptor Behavior
 
-The `before()` method of the Language module:
+The `init()` method of the Language module:
 
 1. Reads the first URL segment (e.g., `fr` or `en`).
 2. Sets `$_GET['lang']` for use throughout the request.
@@ -207,12 +192,13 @@ $this->language->set('fr'); // Force French
 
 ## 7. Notes
 
-- No changes are needed in `engine/ignition.php/get_segments()` or other core files.
+- No changes are needed in `engine/ignition.php` or other core files.
 - The module works fully via the interceptor and the helper.
+- The `([a-z]{2})` regex in routing and `in_array()` in the interceptor both validate the language code — malformed codes are silently ignored.
 - Adding a new language requires:
   1. Creating a `languages/xx.php` file.
-  2. Adding the language code to `AVAILABLE_LANGUAGES` (or using dynamic detection).
-  3. Adding a new custom route if you are using a URL
+  2. Adding the language code to `AVAILABLE_LANGUAGES` in `config.php`.
+  3. No route changes needed — the `([a-z]{2})` pattern handles all two-letter codes automatically.
 
 ---
 
