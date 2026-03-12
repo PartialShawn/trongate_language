@@ -56,7 +56,7 @@ Define the available languages and default language:
 ```php
 define('AVAILABLE_LANGUAGES', ['en', 'fr', 'vn']);
 define('DEFAULT_LANGUAGE', 'en');
-define('SHOW_MISSING_LANGUAGE_MESSAGE', true);
+define('SHOW_MISSING_LANGUAGE_MESSAGE', false);
 
 // Interceptors (run before routing)
 $interceptors = [
